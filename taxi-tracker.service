@@ -1,0 +1,18 @@
+[Unit]
+Description=Taxi Tracker Flask Application
+After=network.target
+
+[Service]
+Type=exec
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/TFL
+Environment=PATH=/home/pi/TFL/venv/bin
+Environment=FLASK_ENV=production
+ExecStart=/home/pi/TFL/venv/bin/gunicorn --config gunicorn.conf.py wsgi:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

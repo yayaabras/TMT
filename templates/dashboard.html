@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="stats-card rounded-lg p-6 hover-scale">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">This Month Income</p>
+                    <p class="text-2xl font-bold text-gray-900" id="monthly-income">{{ "%.2f"|format(current_summary.total_income if current_summary else 0) }} SEK</p>
+                </div>
+                <div class="w-12 h-12 success-bg rounded-full flex items-center justify-center">
+                    <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stats-card rounded-lg p-6 hover-scale">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">This Month Expenses</p>
+                    <p class="text-2xl font-bold text-gray-900" id="monthly-expenses">{{ "%.2f"|format(current_summary.total_expenses if current_summary else 0) }} SEK</p>
+                </div>
+                <div class="w-12 h-12 warning-bg rounded-full flex items-center justify-center">
+                    <i data-lucide="trending-down" class="w-6 h-6 text-white"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stats-card rounded-lg p-6 hover-scale">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Net Profit</p>
+                    <p class="text-2xl font-bold text-gray-900" id="net-profit">{{ "%.2f"|format(current_summary.net_profit if current_summary else 0) }} SEK</p>
+                </div>
+                <div class="w-12 h-12 info-bg rounded-full flex items-center justify-center">
+                    <i data-lucide="dollar-sign" class="w-6 h-6 text-white"></i>
+                </div>
+            </div>
+        </div>
+        <div class="stats-card rounded-lg p-6 hover-scale">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total Trips</p>
+                    <p class="text-2xl font-bold text-gray-900" id="total-trips">{{ current_summary.total_trips if current_summary else 0 }}</p>
+                </div>
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                    <i data-lucide="map-pin" class="w-6 h-6 text-white"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <a href="{{ url_for('add_income') }}" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+            <i data-lucide="plus" class="w-6 h-6 mx-auto mb-2"></i>
+            <span class="font-medium">Add Income</span>
+        </a>
+        <a href="{{ url_for('add_expense') }}" class="bg-red-600 hover:bg-red-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+            <i data-lucide="minus" class="w-6 h-6 mx-auto mb-2"></i>
+            <span class="font-medium">Add Expense</span>
+        </a>
+        <a href="{{ url_for('analytics') }}" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+            <i data-lucide="bar-chart-3" class="w-6 h-6 mx-auto mb-2"></i>
+            <span class="font-medium">Analytics</span>
+        </a>
+        <a href="{{ url_for('generate_report') }}" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+            <i data-lucide="file-text" class="w-6 h-6 mx-auto mb-2"></i>
+            <span class="font-medium">Generate Report</span>
+        </a>
+        <a href="{{ url_for('cars') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+            <i data-lucide="car" class="w-6 h-6 mx-auto mb-2"></i>
+            <span class="font-medium">Manage Cars</span>
+        </a>
+    </div>
+    
+    
+{% endblock %}

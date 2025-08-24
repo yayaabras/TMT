@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% block title %}Company Setup - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800 flex items-center justify-center p-4">
+    <div class="max-w-4xl w-full">
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between text-white text-sm mb-2">
+                <span>Company Information</span>
+                <span>Step 2 of 5</span>
+            </div>
+            <div class="w-full bg-blue-800 rounded-full h-2">
+                <div class="bg-white h-2 rounded-full transition-all duration-300" style="width: 40%"></div>
+            </div>
+        </div>
+
+        <!-- Company Setup Card -->
+        <div class="bg-white rounded-xl shadow-2xl p-8 animate-fade-in">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="building" class="w-8 h-8 text-blue-600"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">
+                    Tell us about your company
+                </h1>
+                <p class="text-gray-600">
+                    This information helps us customize TaxiTracker Pro for your business needs.
+                </p>
+            </div>
+
+            <form method="POST" class="space-y-6">
+                <!-- Company Basic Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="company_name" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="building" class="w-4 h-4 inline mr-1"></i>Company Name *
+                        </label>
+                        <input type="text" name="company_name" id="company_name" required 
+                               placeholder="Your Taxi Company Ltd."
+                               class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="registration_number" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="hash" class="w-4 h-4 inline mr-1"></i>Registration Number
+                        </label>
+                        <input type="text" name="registration_number" id="registration_number" 
+                               placeholder="Company registration number"
+                               class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="phone" class="w-4 h-4 inline mr-1"></i>Phone Number *
+                        </label>
+                        <input type="tel" name="phone" id="phone" required 
+                               placeholder="+46 70 123 4567"
+                               class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="mail" class="w-4 h-4 inline mr-1"></i>Business Email *
+                        </label>
+                        <input type="email" name="email" id="email" required 
+                               placeholder="contact@yourtaxicompany.com"
+                               value="{{ current_user.email }}"
+                               class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="map-pin" class="w-4 h-4 inline mr-1"></i>Business Address *
+                    </label>
+                    <textarea name="address" id="address" rows="3" required 
+                              placeholder="Street address, building number..."
+                              class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="building" class="w-4 h-4 inline mr-1"></i>City *
+                        </label>
+                        <input type="text" name="city" id="city" required 
+                               placeholder="Stockholm"
+                               class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="country" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="globe" class="w-4 h-4 inline mr-1"></i>Country *
+                        </label>
+                        <select name="country" id="country" required 
+                                class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select country</option>
+                            <option value="Sweden" selected>Sweden</option>
+                            <option value="Norway">Norway</option>
+                            <option value="Denmark">Denmark</option>
+                            <option value="Finland">Finland</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tax Information -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Tax Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="tax_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i data-lucide="receipt" class="w-4 h-4 inline mr-1"></i>VAT/Tax Number
+                            </label>
+                            <input type="text" name="tax_number" id="tax_number" 
+                                   placeholder="SE123456789001"
+                                   class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">Used for tax reporting and invoicing</p>
+                        </div>
+                        
+                        <div>
+                            <label for="business_type" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i data-lucide="briefcase" class="w-4 h-4 inline mr-1"></i>Business Type
+                            </label>
+                            <select name="business_type" id="business_type" 
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select type</option>
+                                <option value="sole_proprietorship">Sole Proprietorship</option>
+                                <option value="limited_company">Limited Company</option>
+                                <option value="partnership">Partnership</option>
+                                <option value="cooperative">Cooperative</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fleet Size -->
+                <div class="bg-blue-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Fleet Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label for="current_vehicles" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i data-lucide="car" class="w-4 h-4 inline mr-1"></i>Current Vehicles
+                            </label>
+                            <select name="current_vehicles" id="current_vehicles" 
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="1-5">1-5 vehicles</option>
+                                <option value="6-15">6-15 vehicles</option>
+                                <option value="16-50">16-50 vehicles</option>
+                                <option value="51+">51+ vehicles</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="current_drivers" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i data-lucide="users" class="w-4 h-4 inline mr-1"></i>Current Drivers
+                            </label>
+                            <select name="current_drivers" id="current_drivers" 
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="1-5">1-5 drivers</option>
+                                <option value="6-15">6-15 drivers</option>
+                                <option value="16-50">16-50 drivers</option>
+                                <option value="51+">51+ drivers</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="operation_area" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i data-lucide="map" class="w-4 h-4 inline mr-1"></i>Operation Area
+                            </label>
+                            <select name="operation_area" id="operation_area" 
+                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="city">City/Local</option>
+                                <option value="regional">Regional</option>
+                                <option value="national">National</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-between pt-6 border-t border-gray-200">
+                    <a href="{{ url_for('onboarding_welcome') }}" 
+                       class="flex items-center justify-center px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
+                        <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+                        Back
+                    </a>
+                    
+                    <button type="submit" 
+                            class="flex items-center justify-center px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition duration-200 hover-scale">
+                        Continue to Fleet Setup
+                        <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Progress Indicators -->
+        <div class="text-center mt-6 text-white text-sm">
+            <p>Next: Add your vehicles and drivers</p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-format phone number
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.startsWith('46')) {
+            value = '+46 ' + value.substring(2);
+        } else if (value.length > 0) {
+            value = '+46 ' + value;
+        }
+        e.target.value = value;
+    });
+    
+    // Auto-format tax number
+    const taxInput = document.getElementById('tax_number');
+    taxInput.addEventListener('input', function(e) {
+        let value = e.target.value.toUpperCase();
+        if (value.length > 2 && !value.startsWith('SE')) {
+            value = 'SE' + value;
+        }
+        e.target.value = value;
+    });
+});
+</script>
+{% endblock %}

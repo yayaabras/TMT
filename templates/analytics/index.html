@@ -1,0 +1,450 @@
+{% extends 'base.html' %}
+{% block title %}Analytics - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Page Header -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                    <i data-lucide="bar-chart-3" class="w-8 h-8 text-blue-600 mr-3"></i>
+                    Analytics Dashboard
+                </h1>
+                <p class="text-gray-600 mt-2">Comprehensive insights into your taxi business performance</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <select id="yearSelector" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                </select>
+                <button onclick="refreshAnalytics()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-2"></i>Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 hover-scale">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total Income</p>
+                    <p class="text-2xl font-bold text-green-600" id="totalIncome">Loading...</p>
+                    <p class="text-xs text-gray-500 mt-1" id="incomeChange">vs last year</p>
+                </div>
+                <div class="w-12 h-12 success-bg rounded-full flex items-center justify-center">
+                    <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 hover-scale">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total Expenses</p>
+                    <p class="text-2xl font-bold text-red-600" id="totalExpenses">Loading...</p>
+                    <p class="text-xs text-gray-500 mt-1" id="expenseChange">vs last year</p>
+                </div>
+                <div class="w-12 h-12 danger-bg rounded-full flex items-center justify-center">
+                    <i data-lucide="trending-down" class="w-6 h-6 text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 hover-scale">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Net Profit</p>
+                    <p class="text-2xl font-bold text-blue-600" id="netProfit">Loading...</p>
+                    <p class="text-xs text-gray-500 mt-1" id="profitMargin">profit margin</p>
+                </div>
+                <div class="w-12 h-12 info-bg rounded-full flex items-center justify-center">
+                    <i data-lucide="dollar-sign" class="w-6 h-6 text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 hover-scale">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Average Trip Value</p>
+                    <p class="text-2xl font-bold text-purple-600" id="avgTripValue">Loading...</p>
+                    <p class="text-xs text-gray-500 mt-1" id="totalTrips">total trips</p>
+                </div>
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                    <i data-lucide="map-pin" class="w-6 h-6 text-white"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Monthly Trends Chart -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-900">Monthly Trends</h2>
+                <div class="flex space-x-2">
+                    <button onclick="toggleTrendData('income')" class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full hover:bg-green-200">Income</button>
+                    <button onclick="toggleTrendData('expenses')" class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full hover:bg-red-200">Expenses</button>
+                    <button onclick="toggleTrendData('profit')" class="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200">Profit</button>
+                </div>
+            </div>
+            <div class="h-80">
+                <canvas id="monthlyTrendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Platform Breakdown -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Income by Platform</h2>
+            <div class="h-80">
+                <canvas id="platformChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Expense Breakdown -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Expense Categories</h2>
+            <div class="h-80">
+                <canvas id="expenseChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Daily Performance -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Weekly Performance</h2>
+            <div class="h-80">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Tables -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Best Performing Days -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <i data-lucide="calendar" class="w-5 h-5 text-green-600 mr-2"></i>
+                Top 10 Best Days
+            </h2>
+            <div class="overflow-hidden">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Income</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trips</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bestDaysTable" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="3" class="px-4 py-4 text-center text-gray-500">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Car Performance -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <i data-lucide="car" class="w-5 h-5 text-blue-600 mr-2"></i>
+                Vehicle Performance
+            </h2>
+            <div class="overflow-hidden">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vehicle</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Income</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg/Trip</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carPerformanceTable" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="3" class="px-4 py-4 text-center text-gray-500">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let charts = {};
+let analyticsData = {};
+
+// Initialize charts when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    loadAnalyticsData();
+});
+
+function initializeCharts() {
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+            }
+        }
+    };
+
+    // Monthly Trends Chart
+    const trendsCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
+    charts.monthlyTrends = new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: []
+        },
+        options: {
+            ...chartOptions,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + ' SEK';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Platform Breakdown Chart
+    const platformCtx = document.getElementById('platformChart').getContext('2d');
+    charts.platform = new Chart(platformCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                    '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'
+                ]
+            }]
+        },
+        options: {
+            ...chartOptions,
+            plugins: {
+                ...chartOptions.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed.toLocaleString() + ' SEK';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Expense Breakdown Chart
+    const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+    charts.expense = new Chart(expenseCtx, {
+        type: 'pie',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                    '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#06B6D4'
+                ]
+            }]
+        },
+        options: {
+            ...chartOptions,
+            plugins: {
+                ...chartOptions.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed.toLocaleString() + ' SEK';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Weekly Performance Chart
+    const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+    charts.weekly = new Chart(weeklyCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            datasets: [{
+                label: 'Average Income',
+                data: [],
+                backgroundColor: '#3B82F6',
+                borderColor: '#2563EB',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            ...chartOptions,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + ' SEK';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+async function loadAnalyticsData() {
+    try {
+        const year = document.getElementById('yearSelector').value;
+        
+        // Load overview data
+        const overviewResponse = await fetch(`/api/analytics/overview?year=${year}`);
+        const overviewData = await overviewResponse.json();
+        analyticsData.overview = overviewData;
+        
+        // Load time analysis data
+        const timeResponse = await fetch('/api/analytics/time-analysis');
+        const timeData = await timeResponse.json();
+        analyticsData.timeAnalysis = timeData;
+        
+        // Load performance data
+        const performanceResponse = await fetch(`/api/analytics/performance?year=${year}`);
+        const performanceData = await performanceResponse.json();
+        analyticsData.performance = performanceData;
+        
+        updateUI();
+    } catch (error) {
+        console.error('Error loading analytics data:', error);
+    }
+}
+
+function updateUI() {
+    updateMetrics();
+    updateCharts();
+    updateTables();
+}
+
+function updateMetrics() {
+    const metrics = analyticsData.overview.metrics;
+    
+    document.getElementById('totalIncome').textContent = metrics.total_income.toLocaleString() + ' SEK';
+    document.getElementById('totalExpenses').textContent = metrics.total_expenses.toLocaleString() + ' SEK';
+    document.getElementById('netProfit').textContent = metrics.net_profit.toLocaleString() + ' SEK';
+    document.getElementById('avgTripValue').textContent = metrics.average_trip_value.toFixed(2) + ' SEK';
+    document.getElementById('profitMargin').textContent = metrics.profit_margin.toFixed(1) + '% margin';
+    document.getElementById('totalTrips').textContent = metrics.total_trips + ' trips';
+}
+
+function updateCharts() {
+    // Update monthly trends
+    updateMonthlyTrends();
+    
+    // Update platform breakdown
+    const platformData = analyticsData.overview.platform_breakdown;
+    charts.platform.data.labels = platformData.map(p => p.platform);
+    charts.platform.data.datasets[0].data = platformData.map(p => p.amount);
+    charts.platform.update();
+    
+    // Update expense breakdown
+    const expenseData = analyticsData.overview.expense_breakdown;
+    charts.expense.data.labels = expenseData.map(e => e.category);
+    charts.expense.data.datasets[0].data = expenseData.map(e => e.amount);
+    charts.expense.update();
+    
+    // Update weekly performance
+    const dailyData = analyticsData.timeAnalysis.daily_patterns;
+    const weeklyValues = new Array(7).fill(0);
+    dailyData.forEach(day => {
+        const dayIndex = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(day.day);
+        if (dayIndex !== -1) {
+            weeklyValues[dayIndex] = day.avg_income;
+        }
+    });
+    charts.weekly.data.datasets[0].data = weeklyValues;
+    charts.weekly.update();
+}
+
+function updateMonthlyTrends() {
+    const monthlyData = analyticsData.overview.monthly_trends;
+    
+    charts.monthlyTrends.data.datasets = [
+        {
+            label: 'Income',
+            data: monthlyData.map(m => m.income),
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4
+        },
+        {
+            label: 'Expenses',
+            data: monthlyData.map(m => m.expenses),
+            borderColor: '#EF4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+        },
+        {
+            label: 'Profit',
+            data: monthlyData.map(m => m.profit),
+            borderColor: '#3B82F6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4
+        }
+    ];
+    charts.monthlyTrends.update();
+}
+
+function updateTables() {
+    // Update best days table
+    const bestDaysTable = document.getElementById('bestDaysTable');
+    const bestDays = analyticsData.performance.best_days;
+    
+    bestDaysTable.innerHTML = bestDays.map((day, index) => `
+        <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${new Date(day.date).toLocaleDateString()}</td>
+            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-green-600">${day.income.toLocaleString()} SEK</td>
+            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${day.trips} trips</td>
+        </tr>
+    `).join('');
+    
+    // Update car performance table
+    const carTable = document.getElementById('carPerformanceTable');
+    const carData = analyticsData.performance.car_performance;
+    
+    carTable.innerHTML = carData.map((car, index) => `
+        <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${car.car}</td>
+            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-blue-600">${car.income.toLocaleString()} SEK</td>
+            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${car.avg_value.toFixed(2)} SEK</td>
+        </tr>
+    `).join('');
+}
+
+function toggleTrendData(type) {
+    // This function can be expanded to show/hide specific trend lines
+    console.log('Toggle trend data:', type);
+}
+
+function refreshAnalytics() {
+    loadAnalyticsData();
+}
+
+// Year selector change handler
+document.getElementById('yearSelector').addEventListener('change', function() {
+    loadAnalyticsData();
+});
+</script>
+{% endblock %}

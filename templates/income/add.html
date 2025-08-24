@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Add Income - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto animate-fade-in">
+    <div class="bg-white rounded-lg shadow-lg p-6 card-shadow">
+        <div class="flex items-center mb-6">
+            <i data-lucide="trending-up" class="w-8 h-8 text-green-600 mr-3"></i>
+            <h1 class="text-2xl font-bold text-gray-900">Add Income Entry</h1>
+        </div>
+        
+        <form method="POST" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="car_id" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="car" class="w-4 h-4 inline mr-1"></i>Vehicle
+                    </label>
+                    <select name="car_id" id="car_id" required 
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Select a vehicle</option>
+                        {% for car in cars %}
+                        <option value="{{ car.id }}">{{ car.make }} {{ car.model }} - {{ car.license_plate }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="dollar-sign" class="w-4 h-4 inline mr-1"></i>Amount (SEK)
+                    </label>
+                    <input type="number" name="amount" id="amount" step="0.01" min="0" required 
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="platform" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="smartphone" class="w-4 h-4 inline mr-1"></i>Platform
+                    </label>
+                    <select name="platform" id="platform" required 
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Select platform</option>
+                        <option value="Uber">Uber</option>
+                        <option value="Bolt">Bolt</option>
+                        <option value="Street">Street Pickup</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="trip_type" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="map-pin" class="w-4 h-4 inline mr-1"></i>Trip Type
+                    </label>
+                    <select name="trip_type" id="trip_type" 
+                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <option value="Regular">Regular</option>
+                        <option value="Premium">Premium</option>
+                        <option value="Long Distance">Long Distance</option>
+                        <option value="Airport">Airport</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="distance_km" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="navigation" class="w-4 h-4 inline mr-1"></i>Distance (km)
+                    </label>
+                    <input type="number" name="distance_km" id="distance_km" step="0.1" min="0" 
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label for="duration_minutes" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="clock" class="w-4 h-4 inline mr-1"></i>Duration (minutes)
+                    </label>
+                    <input type="number" name="duration_minutes" id="duration_minutes" min="0" 
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="start_location" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="map-pin" class="w-4 h-4 inline mr-1"></i>Start Location
+                    </label>
+                    <input type="text" name="start_location" id="start_location" 
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label for="end_location" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="flag" class="w-4 h-4 inline mr-1"></i>End Location
+                    </label>
+                    <input type="text" name="end_location" id="end_location" 
+                           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+            
+            <div>
+                <label for="date_recorded" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Date
+                </label>
+                <input type="date" name="date_recorded" id="date_recorded" required 
+                       value="{{ datetime.now().strftime('%Y-%m-%d') }}"
+                       class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div>
+                <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i data-lucide="file-text" class="w-4 h-4 inline mr-1"></i>Notes (Optional)
+                </label>
+                <textarea name="notes" id="notes" rows="3" 
+                          class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                          placeholder="Any additional notes about this trip..."></textarea>
+            </div>
+            
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                <a href="{{ url_for('income') }}" 
+                   class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-200">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium transition duration-200 hover-scale">
+                    <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i>
+                    Add Income Entry
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

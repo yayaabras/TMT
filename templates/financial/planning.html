@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% block title %}Financial Planning - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                    <i data-lucide="trending-up" class="w-8 h-8 text-green-600 mr-3"></i>
+                    Financial Planning
+                </h1>
+                <p class="text-gray-600 mt-2">Plan budgets and forecast business performance</p>
+            </div>
+            <div class="text-right">
+                <a href="{{ url_for('add_budget') }}" 
+                   class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 hover-scale">
+                    <i data-lucide="plus" class="w-4 h-4 inline mr-2"></i>Add Budget
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="calendar" class="w-6 h-6 text-blue-600"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Current Month Budget</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ current_budget | default('0') | int | format_currency }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="dollar-sign" class="w-6 h-6 text-green-600"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Actual Performance</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ actual_performance | default('0') | int | format_currency }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="activity" class="w-6 h-6 text-purple-600"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Variance</p>
+                    <p class="text-2xl font-bold {{ 'text-green-600' if variance >= 0 else 'text-red-600' }}">
+                        {{ variance | default('0') | int | format_currency }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="target" class="w-6 h-6 text-yellow-600"></i>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Achievement %</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ achievement_pct | default('0') }}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Forecast Chart -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-900">6-Month Financial Forecast</h2>
+            <div class="flex space-x-2">
+                <button onclick="updateForecast('revenue')" class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200">Revenue</button>
+                <button onclick="updateForecast('expenses')" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200">Expenses</button>
+                <button onclick="updateForecast('profit')" class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200">Profit</button>
+            </div>
+        </div>
+        <div class="h-96">
+            <canvas id="forecastChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Budget Performance -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Budget vs Actual -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-6">Budget vs Actual Performance</h2>
+            <div class="h-64">
+                <canvas id="budgetChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Budget Categories -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-6">Budget Categories</h2>
+            <div class="space-y-4">
+                {% for category in budget_categories %}
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full mr-3" style="background-color: {{ category.color }}"></div>
+                        <span class="font-medium text-gray-900">{{ category.name }}</span>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-gray-900">{{ category.budgeted | format_currency }}</p>
+                        <p class="text-sm {{ 'text-green-600' if category.variance >= 0 else 'text-red-600' }}">
+                            {{ category.variance | format_currency }} variance
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Budgets -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-900">Active Budgets</h2>
+            <div class="flex space-x-2">
+                <select id="budget-period" class="px-3 py-1 border border-gray-300 rounded-lg text-sm">
+                    <option value="current">Current Month</option>
+                    <option value="quarter">This Quarter</option>
+                    <option value="year">This Year</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Budget</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Variance</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for budget in budgets %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ budget.period_start.strftime('%b %Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ budget.category }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ budget.budget_amount | format_currency }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ budget.actual_amount | format_currency }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm {{ 'text-green-600' if budget.variance >= 0 else 'text-red-600' }}">
+                            {{ budget.variance | format_currency }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if budget.achievement_percentage >= 90 %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">On Track</span>
+                            {% elif budget.achievement_percentage >= 70 %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Warning</span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Over Budget</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="editBudget({{ budget.id }})" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                            <button onclick="deleteBudget({{ budget.id }})" class="text-red-600 hover:text-red-900">Delete</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                            No budgets created yet. <a href="{{ url_for('add_budget') }}" class="text-blue-600 hover:text-blue-900">Create your first budget</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Financial Insights -->
+    <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
+        <div class="flex items-start">
+            <i data-lucide="lightbulb" class="w-6 h-6 text-blue-600 mr-3 mt-1 flex-shrink-0"></i>
+            <div>
+                <h3 class="text-lg font-semibold text-blue-900 mb-2">Financial Insights</h3>
+                <div class="space-y-2 text-sm text-blue-800">
+                    <p><strong>Cash Flow Trend:</strong> {{ insights.cash_flow_trend | default('Stable') }} based on recent performance</p>
+                    <p><strong>Seasonal Pattern:</strong> {{ insights.seasonal_pattern | default('No clear pattern detected') }}</p>
+                    <p><strong>Budget Accuracy:</strong> Your budgets are typically {{ insights.budget_accuracy | default('75') }}% accurate</p>
+                    <p><strong>Recommendation:</strong> {{ insights.recommendation | default('Consider adjusting budget categories based on actual spending patterns') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let forecastChart, budgetChart;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeForecastChart();
+    initializeBudgetChart();
+    loadForecastData();
+    loadBudgetData();
+});
+
+function initializeForecastChart() {
+    const ctx = document.getElementById('forecastChart').getContext('2d');
+    forecastChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Forecast',
+                data: [],
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Actual',
+                data: [],
+                borderColor: 'rgb(34, 197, 94)',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('sv-SE', { 
+                                style: 'currency', 
+                                currency: 'SEK' 
+                            }).format(value);
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + 
+                                new Intl.NumberFormat('sv-SE', { 
+                                    style: 'currency', 
+                                    currency: 'SEK' 
+                                }).format(context.parsed.y);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function initializeBudgetChart() {
+    const ctx = document.getElementById('budgetChart').getContext('2d');
+    budgetChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Budget',
+                data: [],
+                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                borderColor: 'rgb(59, 130, 246)',
+                borderWidth: 1
+            }, {
+                label: 'Actual',
+                data: [],
+                backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                borderColor: 'rgb(34, 197, 94)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('sv-SE', { 
+                                style: 'currency', 
+                                currency: 'SEK' 
+                            }).format(value);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function loadForecastData() {
+    fetch('/api/financial-forecast')
+        .then(response => response.json())
+        .then(data => {
+            forecastChart.data.labels = data.labels;
+            forecastChart.data.datasets[0].data = data.forecast;
+            forecastChart.data.datasets[1].data = data.actual;
+            forecastChart.update();
+        })
+        .catch(error => console.error('Error loading forecast data:', error));
+}
+
+function loadBudgetData() {
+    fetch('/api/budget-performance')
+        .then(response => response.json())
+        .then(data => {
+            budgetChart.data.labels = data.labels;
+            budgetChart.data.datasets[0].data = data.budget;
+            budgetChart.data.datasets[1].data = data.actual;
+            budgetChart.update();
+        })
+        .catch(error => console.error('Error loading budget data:', error));
+}
+
+function updateForecast(type) {
+    fetch(`/api/financial-forecast?type=${type}`)
+        .then(response => response.json())
+        .then(data => {
+            forecastChart.data.labels = data.labels;
+            forecastChart.data.datasets[0].data = data.forecast;
+            forecastChart.data.datasets[1].data = data.actual;
+            forecastChart.update();
+        });
+}
+
+function editBudget(budgetId) {
+    window.location.href = `/financial-planning/budget/edit/${budgetId}`;
+}
+
+function deleteBudget(budgetId) {
+    if (confirm('Are you sure you want to delete this budget?')) {
+        fetch(`/financial-planning/budget/${budgetId}`, {
+            method: 'DELETE'
+        }).then(() => {
+            location.reload();
+        });
+    }
+}
+</script>
+{% endblock %}

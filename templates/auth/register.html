@@ -1,0 +1,477 @@
+{% extends 'base.html' %}
+{% block title %}Register - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 animate-fade-in">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="flex justify-center">
+            <i data-lucide="car" class="w-12 h-12 text-blue-600"></i>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-bold text-gray-900">
+            Create your account
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Join the professional taxi fleet management platform
+        </p>
+        <p class="mt-1 text-center text-sm text-gray-600">
+            Or <a href="{{ url_for('login') }}" class="font-medium text-blue-600 hover:text-blue-500">sign in to existing account</a>
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
+        <div class="bg-white py-8 px-4 shadow-lg rounded-lg sm:px-10 card-shadow">
+            <form class="space-y-6" action="{{ url_for('register') }}" method="POST">
+                
+                <!-- Account Type Selection -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Choose Account Type</h3>
+                    <div class="space-y-3">
+                        <label class="relative flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition duration-200">
+                            <input type="radio" name="account_type" value="new_company" class="sr-only" onchange="toggleCompanyFields()">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-4 h-4 border-2 border-gray-300 rounded-full mr-3 radio-custom"></div>
+                                <div class="flex items-center">
+                                    <i data-lucide="building" class="w-5 h-5 text-blue-600 mr-2"></i>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Start New Company</div>
+                                        <div class="text-xs text-gray-500">Create a new taxi fleet management company</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                        
+                        <label class="relative flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition duration-200">
+                            <input type="radio" name="account_type" value="join_company" class="sr-only" onchange="toggleCompanyFields()">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-4 h-4 border-2 border-gray-300 rounded-full mr-3 radio-custom"></div>
+                                <div class="flex items-center">
+                                    <i data-lucide="users" class="w-5 h-5 text-green-600 mr-2"></i>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Join Existing Company</div>
+                                        <div class="text-xs text-gray-500">Join as a driver or manager in an existing company</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <!-- Personal Information -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Personal Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700">
+                            First Name
+                        </label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="user" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                            <input id="first_name" name="first_name" type="text" required 
+                                   class="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700">
+                            Last Name
+                        </label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="user" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                            <input id="last_name" name="last_name" type="text" required 
+                                   class="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                    </div>
+                    
+                    <div class="mt-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700">
+                            Email address
+                        </label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="mail" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                            <input id="email" name="email" type="email" autocomplete="email" required 
+                                   class="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700">
+                                Phone Number
+                            </label>
+                            <div class="mt-1 relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="phone" class="h-5 w-5 text-gray-400"></i>
+                                </div>
+                                <input id="phone" name="phone" type="tel" required
+                                       class="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="license_number" class="block text-sm font-medium text-gray-700">
+                                Driver License Number
+                            </label>
+                            <div class="mt-1 relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="credit-card" class="h-5 w-5 text-gray-400"></i>
+                                </div>
+                                <input id="license_number" name="license_number" type="text" 
+                                       class="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Company Information -->
+                <div id="new-company-fields" class="hidden border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Company Information</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="company_name" class="block text-sm font-medium text-gray-700">
+                                Company Name
+                            </label>
+                            <div class="mt-1 relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="building" class="h-5 w-5 text-gray-400"></i>
+                                </div>
+                                <input id="company_name" name="company_name" type="text"
+                                       placeholder="e.g. Stockholm Taxi AB" 
+                                       class="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="company_registration" class="block text-sm font-medium text-gray-700">
+                                    Organization Number (Optional)
+                                </label>
+                                <input id="company_registration" name="company_registration" type="text"
+                                       placeholder="556123-4567" 
+                                       class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label for="tax_number" class="block text-sm font-medium text-gray-700">
+                                    VAT Number (Optional)
+                                </label>
+                                <input id="tax_number" name="tax_number" type="text"
+                                       placeholder="SE556123456701" 
+                                       class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="company_address" class="block text-sm font-medium text-gray-700">
+                                Company Address
+                            </label>
+                            <textarea id="company_address" name="company_address" rows="2"
+                                      placeholder="Street address, City, Postal code" 
+                                      class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="company_city" class="block text-sm font-medium text-gray-700">
+                                    City
+                                </label>
+                                <input id="company_city" name="company_city" type="text"
+                                       placeholder="Stockholm" 
+                                       class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label for="company_phone" class="block text-sm font-medium text-gray-700">
+                                    Company Phone
+                                </label>
+                                <input id="company_phone" name="company_phone" type="tel"
+                                       placeholder="+46 8 123 456 78" 
+                                       class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Join Existing Company -->
+                <div id="existing-company-fields" class="hidden border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Join Company</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="existing_company_id" class="block text-sm font-medium text-gray-700">
+                                Select Company
+                            </label>
+                            <select id="existing_company_id" name="existing_company_id"
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Choose a company...</option>
+                                {% for company in companies %}
+                                <option value="{{ company.id }}">{{ company.name }} - {{ company.city or 'Sweden' }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="join_code" class="block text-sm font-medium text-gray-700">
+                                Join Code
+                            </label>
+                            <div class="mt-1 relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="key" class="h-5 w-5 text-gray-400"></i>
+                                </div>
+                                <input id="join_code" name="join_code" type="text"
+                                       placeholder="JOIN-123-ABC (provided by your employer)" 
+                                       class="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Contact your company administrator to get the join code</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Security</h3>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">
+                            Password
+                        </label>
+                        <div class="mt-1 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="lock" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                            <input id="password" name="password" type="password" autocomplete="new-password" required 
+                                   minlength="8" placeholder="At least 8 characters"
+                                   class="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">Use a strong password with at least 8 characters</p>
+                    </div>
+                </div>
+
+                <!-- Terms and Submit -->
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <input id="agree_terms" name="agree_terms" type="checkbox" required
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="agree_terms" class="ml-2 block text-sm text-gray-900">
+                            I agree to the <a href="#" class="text-blue-600 hover:text-blue-500">Terms of Service</a> and 
+                            <a href="#" class="text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <input id="newsletter" name="newsletter" type="checkbox"
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="newsletter" class="ml-2 block text-sm text-gray-900">
+                            Send me product updates and taxi industry insights
+                        </label>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 hover-scale">
+                        <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
+                        Create Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom radio button styles */
+.radio-custom {
+    transition: all 0.2s;
+}
+
+input[type="radio"]:checked + div .radio-custom {
+    border-color: #3B82F6;
+    background-color: #3B82F6;
+    position: relative;
+}
+
+input[type="radio"]:checked + div .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+input[type="radio"]:checked + div {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 640px) {
+    .sm\:max-w-2xl {
+        max-width: 95vw;
+    }
+    
+    .grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .sm\:px-10 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+</style>
+
+<script>
+function toggleCompanyFields() {
+    const accountType = document.querySelector('input[name="account_type"]:checked')?.value;
+    const newCompanyFields = document.getElementById('new-company-fields');
+    const existingCompanyFields = document.getElementById('existing-company-fields');
+    
+    // Hide all initially
+    newCompanyFields.classList.add('hidden');
+    existingCompanyFields.classList.add('hidden');
+    
+    // Reset all field requirements
+    document.getElementById('company_name').required = false;
+    document.getElementById('existing_company_id').required = false;
+    document.getElementById('join_code').required = false;
+    
+    if (accountType === 'new_company') {
+        newCompanyFields.classList.remove('hidden');
+        document.getElementById('company_name').required = true;
+    } else if (accountType === 'join_company') {
+        existingCompanyFields.classList.remove('hidden');
+        document.getElementById('existing_company_id').required = true;
+        document.getElementById('join_code').required = true;
+    }
+    
+    // Smooth scroll to show new fields
+    setTimeout(() => {
+        if (!newCompanyFields.classList.contains('hidden') || !existingCompanyFields.classList.contains('hidden')) {
+            const targetElement = accountType === 'new_company' ? newCompanyFields : existingCompanyFields;
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 100);
+}
+
+// Form validation and UX improvements
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-format organization number
+    const orgNumberInput = document.getElementById('company_registration');
+    if (orgNumberInput) {
+        orgNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9]/g, '');
+            if (value.length >= 6) {
+                value = value.substring(0, 6) + '-' + value.substring(6, 10);
+            }
+            e.target.value = value;
+        });
+    }
+    
+    // Auto-format VAT number
+    const vatInput = document.getElementById('tax_number');
+    if (vatInput) {
+        vatInput.addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (value.length > 2 && !value.startsWith('SE')) {
+                value = 'SE' + value;
+            }
+            e.target.value = value;
+        });
+    }
+    
+    // Phone number formatting
+    const phoneInputs = document.querySelectorAll('input[type="tel"]');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9+\s-]/g, '');
+            e.target.value = value;
+        });
+    });
+    
+    // Password strength indicator
+    const passwordInput = document.getElementById('password');
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strength = calculatePasswordStrength(password);
+            updatePasswordStrengthIndicator(strength, passwordInput);
+        });
+    }
+    
+    // Form submission validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const accountType = document.querySelector('input[name="account_type"]:checked');
+        
+        if (!accountType) {
+            e.preventDefault();
+            alert('Please select an account type.');
+            document.querySelector('input[name="account_type"]').focus();
+            return false;
+        }
+        
+        // Additional validation based on account type
+        if (accountType.value === 'new_company') {
+            const companyName = document.getElementById('company_name').value.trim();
+            if (!companyName) {
+                e.preventDefault();
+                alert('Company name is required for new companies.');
+                document.getElementById('company_name').focus();
+                return false;
+            }
+        }
+        
+        if (accountType.value === 'join_company') {
+            const joinCode = document.getElementById('join_code').value.trim();
+            if (!joinCode) {
+                e.preventDefault();
+                alert('Join code is required to join an existing company.');
+                document.getElementById('join_code').focus();
+                return false;
+            }
+        }
+        
+        return true;
+    });
+});
+
+function calculatePasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (password.match(/[a-z]/)) strength++;
+    if (password.match(/[A-Z]/)) strength++;
+    if (password.match(/[0-9]/)) strength++;
+    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+    return strength;
+}
+
+function updatePasswordStrengthIndicator(strength, inputElement) {
+    // Remove existing indicator
+    const existingIndicator = inputElement.parentNode.querySelector('.password-strength');
+    if (existingIndicator) {
+        existingIndicator.remove();
+    }
+    
+    if (inputElement.value.length === 0) return;
+    
+    // Create strength indicator
+    const indicator = document.createElement('div');
+    indicator.className = 'password-strength mt-1 text-xs';
+    
+    const colors = ['text-red-500', 'text-red-500', 'text-yellow-500', 'text-blue-500', 'text-green-500'];
+    const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+    
+    indicator.textContent = 'Password strength: ' + labels[strength - 1] || labels[0];
+    indicator.className += ' ' + (colors[strength - 1] || colors[0]);
+    
+    inputElement.parentNode.appendChild(indicator);
+}
+</script>
+{% endblock %}

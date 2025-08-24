@@ -1,0 +1,378 @@
+{% extends 'base.html' %}
+{% block title %}Notification Settings - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                    <i data-lucide="settings" class="w-8 h-8 text-blue-600 mr-3"></i>
+                    Notification Settings
+                </h1>
+                <p class="text-gray-600 mt-2">Configure automated notifications and scheduled reports</p>
+            </div>
+            <div class="text-right">
+                <a href="{{ url_for('notifications') }}" 
+                   class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 mr-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i>Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 hover-scale">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                    <i data-lucide="bell-plus" class="w-6 h-6 text-blue-600"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Create Notification Rule</h3>
+                    <p class="text-sm text-gray-600">Set up automated alerts and reminders</p>
+                </div>
+            </div>
+            <a href="{{ url_for('create_notification_rule') }}" 
+               class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 inline-block text-center">
+                Create Rule
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 hover-scale">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                    <i data-lucide="file-bar-chart" class="w-6 h-6 text-green-600"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Schedule Report</h3>
+                    <p class="text-sm text-gray-600">Automate regular report delivery</p>
+                </div>
+            </div>
+            <a href="{{ url_for('schedule_report') }}" 
+               class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 inline-block text-center">
+                Schedule Report
+            </a>
+        </div>
+    </div>
+
+    <!-- Notification Rules -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-900">Notification Rules</h2>
+            <span class="text-sm text-gray-500">{{ notification_rules|length }} active rules</span>
+        </div>
+        
+        {% if notification_rules %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rule Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trigger</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Triggered</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for rule in notification_rules %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ rule.name }}</div>
+                            <div class="text-sm text-gray-500">Created {{ rule.created_at.strftime('%m/%d/%Y') }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
+                                {{ rule.trigger_type.replace('_', ' ') }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {% if rule.target_roles %}
+                                {{ rule.target_roles.replace(',', ', ').title() }}
+                            {% else %}
+                                Specific Users
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if rule.is_active %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Active
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                Inactive
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ rule.last_triggered.strftime('%m/%d/%Y %I:%M %p') if rule.last_triggered else 'Never' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                            <button onclick="editRule({{ rule.id }})" 
+                                    class="text-blue-600 hover:text-blue-900">Edit</button>
+                            <button onclick="toggleRule({{ rule.id }})" 
+                                    class="text-yellow-600 hover:text-yellow-900">
+                                {{ 'Disable' if rule.is_active else 'Enable' }}
+                            </button>
+                            <button onclick="deleteRule({{ rule.id }})" 
+                                    class="text-red-600 hover:text-red-900">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="bell-off" class="w-8 h-8 text-gray-400"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No notification rules</h3>
+            <p class="text-gray-600 mb-4">Create your first automated notification rule to get started.</p>
+            <a href="{{ url_for('create_notification_rule') }}" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
+                Create Rule
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Scheduled Reports -->
+    <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-900">Scheduled Reports</h2>
+            <span class="text-sm text-gray-500">{{ scheduled_reports|length }} scheduled reports</span>
+        </div>
+        
+        {% if scheduled_reports %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Report Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frequency</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Next Run</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipients</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for report in scheduled_reports %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ report.name }}</div>
+                            <div class="text-sm text-gray-500">{{ report.format.upper() }} format</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 capitalize">
+                                {{ report.report_type.replace('_', ' ') }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm text-gray-900 capitalize">{{ report.frequency }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ report.next_run.strftime('%m/%d/%Y %I:%M %p') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {% set recipients = report.recipients | fromjson %}
+                            {{ recipients | length }} recipient{{ 's' if recipients | length != 1 else '' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if report.is_active %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Active
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                Paused
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                            <button onclick="editReport({{ report.id }})" 
+                                    class="text-blue-600 hover:text-blue-900">Edit</button>
+                            <button onclick="runNow({{ report.id }})" 
+                                    class="text-green-600 hover:text-green-900">Run Now</button>
+                            <button onclick="toggleReport({{ report.id }})" 
+                                    class="text-yellow-600 hover:text-yellow-900">
+                                {{ 'Pause' if report.is_active else 'Resume' }}
+                            </button>
+                            <button onclick="deleteReport({{ report.id }})" 
+                                    class="text-red-600 hover:text-red-900">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="calendar-x" class="w-8 h-8 text-gray-400"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No scheduled reports</h3>
+            <p class="text-gray-600 mb-4">Set up automated report delivery to stay informed.</p>
+            <a href="{{ url_for('schedule_report') }}" 
+               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
+                Schedule Report
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- System Notifications -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">System Notifications</h2>
+        
+        <div class="space-y-6">
+            <!-- Compliance Notifications -->
+            <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-yellow-600 mr-2"></i>
+                        <h3 class="text-lg font-semibold text-gray-900">Compliance Alerts</h3>
+                    </div>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" checked>
+                        <span class="ml-2 text-sm text-gray-700">Enabled</span>
+                    </label>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">
+                    Automatic alerts for license renewals, insurance expiry, and vehicle registrations.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div class="bg-gray-50 p-3 rounded">
+                        <strong>License Expiry:</strong> 30 days notice
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded">
+                        <strong>Insurance Renewal:</strong> 30 days notice
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded">
+                        <strong>Vehicle Registration:</strong> 30 days notice
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Notifications -->
+            <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <i data-lucide="dollar-sign" class="w-5 h-5 text-green-600 mr-2"></i>
+                        <h3 class="text-lg font-semibold text-gray-900">Financial Alerts</h3>
+                    </div>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" checked>
+                        <span class="ml-2 text-sm text-gray-700">Enabled</span>
+                    </label>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">
+                    Budget performance alerts and financial milestone notifications.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-gray-50 p-3 rounded">
+                        <strong>Over Budget:</strong> Alert when 10% over budget
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded">
+                        <strong>Under Performance:</strong> Alert when 20% under revenue target
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Notifications -->
+            <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <i data-lucide="trending-up" class="w-5 h-5 text-blue-600 mr-2"></i>
+                        <h3 class="text-lg font-semibold text-gray-900">Performance Reports</h3>
+                    </div>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" checked>
+                        <span class="ml-2 text-sm text-gray-700">Enabled</span>
+                    </label>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">
+                    Monthly performance summaries and achievement notifications.
+                </p>
+                <div class="text-sm bg-gray-50 p-3 rounded">
+                    <strong>Monthly Summary:</strong> Delivered first day of each month
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function editRule(ruleId) {
+    // Implementation for editing notification rule
+    window.location.href = `/notifications/edit-rule/${ruleId}`;
+}
+
+function toggleRule(ruleId) {
+    fetch(`/notifications/toggle-rule/${ruleId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }).then(response => {
+        if (response.ok) {
+            location.reload();
+        }
+    });
+}
+
+function deleteRule(ruleId) {
+    if (confirm('Are you sure you want to delete this notification rule?')) {
+        fetch(`/notifications/delete-rule/${ruleId}`, {
+            method: 'DELETE'
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            }
+        });
+    }
+}
+
+function editReport(reportId) {
+    window.location.href = `/notifications/edit-report/${reportId}`;
+}
+
+function runNow(reportId) {
+    if (confirm('Generate and send this report now?')) {
+        fetch(`/notifications/run-report/${reportId}`, {
+            method: 'POST'
+        }).then(response => {
+            if (response.ok) {
+                alert('Report generation started. You will be notified when complete.');
+            }
+        });
+    }
+}
+
+function toggleReport(reportId) {
+    fetch(`/notifications/toggle-report/${reportId}`, {
+        method: 'POST'
+    }).then(response => {
+        if (response.ok) {
+            location.reload();
+        }
+    });
+}
+
+function deleteReport(reportId) {
+    if (confirm('Are you sure you want to delete this scheduled report?')) {
+        fetch(`/notifications/delete-report/${reportId}`, {
+            method: 'DELETE'
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

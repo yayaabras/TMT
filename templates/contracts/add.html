@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% block title %}Add Employment Contract - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto animate-fade-in">
+    <div class="bg-white rounded-lg shadow-lg p-6 card-shadow">
+        <div class="flex items-center mb-6">
+            <i data-lucide="file-signature" class="w-8 h-8 text-blue-600 mr-3"></i>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Add Employment Contract</h1>
+                <p class="text-gray-600">Create a new driver employment agreement</p>
+            </div>
+        </div>
+        
+        <form method="POST" class="space-y-6">
+            <!-- Driver Selection -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Driver Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="driver_id" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="user" class="w-4 h-4 inline mr-1"></i>Select Driver
+                        </label>
+                        <select name="driver_id" id="driver_id" required 
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Choose a driver</option>
+                            {% for driver in drivers %}
+                            <option value="{{ driver.id }}">{{ driver.first_name }} {{ driver.last_name }} - {{ driver.email }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contract Terms -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Contract Terms</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="contract_type" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="file-text" class="w-4 h-4 inline mr-1"></i>Contract Type
+                        </label>
+                        <select name="contract_type" id="contract_type" required 
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                onchange="updateContractFields()">
+                            <option value="">Select contract type</option>
+                            <option value="monthly_rental">Monthly Rental</option>
+                            <option value="commission_only">Commission Only</option>
+                            <option value="hybrid">Hybrid (Base + Commission)</option>
+                            <option value="lease_to_own">Lease to Own</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="payment_schedule" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Payment Schedule
+                        </label>
+                        <select name="payment_schedule" id="payment_schedule" 
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="monthly">Monthly</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="bi_weekly">Bi-weekly</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Terms -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Financial Terms</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="monthly_fee_field">
+                        <label for="monthly_fee" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="dollar-sign" class="w-4 h-4 inline mr-1"></i>Monthly Fee (SEK)
+                        </label>
+                        <input type="number" name="monthly_fee" id="monthly_fee" step="0.01" min="0" 
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div id="commission_rate_field">
+                        <label for="commission_rate" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="percent" class="w-4 h-4 inline mr-1"></i>Commission Rate (%)
+                        </label>
+                        <input type="number" name="commission_rate" id="commission_rate" step="0.1" min="0" max="100" 
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="security_deposit" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="shield" class="w-4 h-4 inline mr-1"></i>Security Deposit (SEK)
+                        </label>
+                        <input type="number" name="security_deposit" id="security_deposit" step="0.01" min="0" 
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="minimum_guarantee" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="trending-up" class="w-4 h-4 inline mr-1"></i>Minimum Guarantee (SEK)
+                        </label>
+                        <input type="number" name="minimum_guarantee" id="minimum_guarantee" step="0.01" min="0" 
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bonus Structure -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Bonus Structure (Optional)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="bonus_threshold" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="target" class="w-4 h-4 inline mr-1"></i>Bonus Threshold (SEK)
+                        </label>
+                        <input type="number" name="bonus_threshold" id="bonus_threshold" step="0.01" min="0" 
+                               placeholder="Minimum earnings to qualify for bonus"
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="bonus_rate" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="award" class="w-4 h-4 inline mr-1"></i>Bonus Rate (%)
+                        </label>
+                        <input type="number" name="bonus_rate" id="bonus_rate" step="0.1" min="0" max="50" 
+                               placeholder="Percentage of excess earnings"
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contract Period -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Contract Period</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Start Date
+                        </label>
+                        <input type="date" name="start_date" id="start_date" required 
+                               value="{{ datetime.now().strftime('%Y-%m-%d') }}"
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>End Date (Optional)
+                        </label>
+                        <input type="date" name="end_date" id="end_date" 
+                               class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div class="flex items-end">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="auto_renew" id="auto_renew" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <span class="ml-2 text-sm text-gray-700">Auto-renew contract</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Terms and Conditions</h3>
+                <div>
+                    <label for="terms_conditions" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i data-lucide="file-text" class="w-4 h-4 inline mr-1"></i>Additional Terms
+                    </label>
+                    <textarea name="terms_conditions" id="terms_conditions" rows="5" 
+                              placeholder="Enter any specific terms, conditions, or requirements for this contract..."
+                              class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+            </div>
+
+            <!-- Contract Preview -->
+            <div id="contract_preview" class="bg-blue-50 p-4 rounded-lg hidden">
+                <h3 class="text-lg font-semibold text-blue-900 mb-4">Contract Preview</h3>
+                <div id="preview_content" class="text-sm text-blue-800"></div>
+            </div>
+            
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                <a href="{{ url_for('contracts') }}" 
+                   class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-200">
+                    Cancel
+                </a>
+                <button type="button" onclick="previewContract()" 
+                        class="px-4 py-2 border border-blue-300 rounded-md text-sm font-medium text-blue-700 hover:bg-blue-50 transition duration-200">
+                    Preview Contract
+                </button>
+                <button type="submit" 
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition duration-200 hover-scale">
+                    <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i>
+                    Create Contract
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function updateContractFields() {
+    const contractType = document.getElementById('contract_type').value;
+    const monthlyFeeField = document.getElementById('monthly_fee_field');
+    const commissionRateField = document.getElementById('commission_rate_field');
+    
+    // Reset visibility
+    monthlyFeeField.style.display = 'block';
+    commissionRateField.style.display = 'block';
+    
+    // Update field requirements based on contract type
+    if (contractType === 'monthly_rental') {
+        document.getElementById('monthly_fee').required = true;
+        document.getElementById('commission_rate').required = false;
+        commissionRateField.style.display = 'none';
+    } else if (contractType === 'commission_only') {
+        document.getElementById('monthly_fee').required = false;
+        document.getElementById('commission_rate').required = true;
+        monthlyFeeField.style.display = 'none';
+    } else if (contractType === 'hybrid') {
+        document.getElementById('monthly_fee').required = true;
+        document.getElementById('commission_rate').required = true;
+    } else if (contractType === 'lease_to_own') {
+        document.getElementById('monthly_fee').required = true;
+        document.getElementById('commission_rate').required = false;
+        commissionRateField.style.display = 'none';
+    }
+}
+
+function previewContract() {
+    const driverSelect = document.getElementById('driver_id');
+    const driverName = driverSelect.options[driverSelect.selectedIndex].text.split(' - ')[0];
+    const contractType = document.getElementById('contract_type').value;
+    const monthlyFee = document.getElementById('monthly_fee').value;
+    const commissionRate = document.getElementById('commission_rate').value;
+    const startDate = document.getElementById('start_date').value;
+    
+    let preview = `<strong>Driver:</strong> ${driverName}<br>`;
+    preview += `<strong>Contract Type:</strong> ${contractType.replace('_', ' ').toUpperCase()}<br>`;
+    
+    if (monthlyFee) {
+        preview += `<strong>Monthly Fee:</strong> ${monthlyFee} SEK<br>`;
+    }
+    if (commissionRate) {
+        preview += `<strong>Commission Rate:</strong> ${commissionRate}%<br>`;
+    }
+    preview += `<strong>Start Date:</strong> ${startDate}<br>`;
+    
+    document.getElementById('preview_content').innerHTML = preview;
+    document.getElementById('contract_preview').classList.remove('hidden');
+}
+
+// Initialize form
+document.addEventListener('DOMContentLoaded', function() {
+    updateContractFields();
+});
+</script>
+{% endblock %}

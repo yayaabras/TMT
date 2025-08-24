@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% block title %}Reports - TaxiTracker Pro{% endblock %}
+{% block content %}
+<!-- Reports content goes here -->
+{% endblock %}
+<body class="h-full">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-lucide="car" class="w-8 h-8 text-blue-600 mr-2"></i>
+                        <span class="text-xl font-bold text-gray-900">TaxiTracker Pro</span>
+                    </div>
+                    
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="#" class="border-blue-500 text-gray-900 whitespace-nowrap py-2 px-1 border-b-2 font-medium">
+                            <i data-lucide="home" class="w-4 h-4 inline mr-1"></i>Dashboard
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium">
+                            <i data-lucide="trending-up" class="w-4 h-4 inline mr-1"></i>Income
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium">
+                            <i data-lucide="trending-down" class="w-4 h-4 inline mr-1"></i>Expenses
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium">
+                            <i data-lucide="car" class="w-4 h-4 inline mr-1"></i>Vehicles
+                        </a>
+                        <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium">
+                            <i data-lucide="file-text" class="w-4 h-4 inline mr-1"></i>Reports
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">Sign in</a>
+                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden">
+        <div class="gradient-bg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in">
+                        Track Your Taxi Income Like a Pro
+                    </h1>
+                    <p class="text-xl text-blue-100 mb-8 max-w-3xl mx-auto animate-fade-in">
+                        Comprehensive income and expense tracking for taxi drivers. Generate professional reports, 
+                        manage multiple vehicles, and take control of your finances.
+                    </p>
+                    <div class="space-x-4 animate-fade-in">
+                        <a href="#" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-200 hover-scale">
+                            Start Free Trial
+                        </a>
+                        <a href="#" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-200">
+                            Sign In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Demo Section -->
+    <div class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Your Dashboard Overview</h2>
+                <p class="text-lg text-gray-600">See how your finances look at a glance</p>
+            </div>
+            
+            <!-- Demo Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stats-card rounded-lg p-6 hover-scale">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">This Month Income</p>
+                            <p class="text-2xl font-bold text-gray-900">15,240 SEK</p>
+                        </div>
+                        <div class="w-12 h-12 success-bg rounded-full flex items-center justify-center">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-card rounded-lg p-6 hover-scale">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">This Month Expenses</p>
+                            <p class="text-2xl font-bold text-gray-900">4,580 SEK</p>
+                        </div>
+                        <div class="w-12 h-12 warning-bg rounded-full flex items-center justify-center">
+                            <i data-lucide="trending-down" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-card rounded-lg p-6 hover-scale">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Net Profit</p>
+                            <p class="text-2xl font-bold text-gray-900">10,660 SEK</p>
+                        </div>
+                        <div class="w-12 h-12 info-bg rounded-full flex items-center justify-center">
+                            <i data-lucide="dollar-sign" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-card rounded-lg p-6 hover-scale">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total Trips</p>
+                            <p class="text-2xl font-bold text-gray-900">247</p>
+                        </div>
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                            <i data-lucide="map-pin" class="w-6 h-6 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Demo -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <a href="#" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+                    <i data-lucide="plus" class="w-6 h-6 mx-auto mb-2"></i>
+                    <span class="font-medium">Add Income</span>
+                </a>
+                <a href="#" class="bg-red-600 hover:bg-red-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+                    <i data-lucide="minus" class="w-6 h-6 mx-auto mb-2"></i>
+                    <span class="font-medium">Add Expense</span>
+                </a>
+                <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+                    <i data-lucide="file-text" class="w-6 h-6 mx-auto mb-2"></i>
+                    <span class="font-medium">Generate Report</span>
+                </a>
+                <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg text-center hover-scale transition duration-200">
+                    <i data-lucide="car" class="w-6 h-6 mx-auto mb-2"></i>
+                    <span class="font-medium">Manage Cars</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Everything You Need</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Professional tools designed specifically for taxi drivers and fleet owners
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-6 rounded-lg card-shadow hover-scale">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="trending-up" class="w-8 h-8 text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Income Tracking</h3>
+                    <p class="text-gray-600">Track income from multiple platforms - Uber, Bolt, street pickups, and more.</p>
+                </div>
+                
+                <div class="text-center p-6 rounded-lg card-shadow hover-scale">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="file-text" class="w-8 h-8 text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Professional Reports</h3>
+                    <p class="text-gray-600">Generate Excel and CSV reports with detailed breakdowns for tax purposes.</p>
+                </div>
+                
+                <div class="text-center p-6 rounded-lg card-shadow hover-scale">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="car" class="w-8 h-8 text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Multi-Vehicle</h3>
+                    <p class="text-gray-600">Manage multiple vehicles with separate tracking and reporting.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-4">
+                    <i data-lucide="car" class="w-8 h-8 text-blue-400 mr-2"></i>
+                    <span class="text-xl font-bold">TaxiTracker Pro</span>
+                </div>
+                <p class="text-gray-400 mb-4">Professional income management for taxi drivers</p>
+                <p class="text-sm text-gray-500">&copy; 2024 TaxiTracker Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

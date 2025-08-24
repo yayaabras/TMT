@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Add Expense - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Add Expense</h2>
+    <form action="{{ url_for('add_expense') }}" method="post" class="space-y-4">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.date.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.date(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.category.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.category(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.description.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.description(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.amount.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.amount(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md">Add Expense</button>
+    </form>
+</div>
+{% endblock %}
+

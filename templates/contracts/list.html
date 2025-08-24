@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}Employment Contracts - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+                <i data-lucide="file-signature" class="w-6 h-6 text-blue-600 mr-2"></i>
+                Employment Contracts
+            </h1>
+            <p class="text-gray-600">Manage driver employment contracts and terms</p>
+        </div>
+        <a href="{{ url_for('add_contract') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 hover-scale">
+            <i data-lucide="plus" class="w-4 h-4 inline mr-2"></i>New Contract
+        </a>
+    </div>
+
+    <!-- Contracts List -->
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contract Type</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Terms</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for contract in contracts.items %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <div class="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
+                                        {{ contract.driver.first_name[0] }}{{ contract.driver.last_name[0] }}
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ contract.driver.first_name }} {{ contract.driver.last_name }}
+                                    </div>
+                                    <div class="text-sm text-gray-500">{{ contract.driver.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                {% if contract.contract_type == 'monthly_rental' %}bg-blue-100 text-blue-800
+                                {% elif contract.contract_type == 'commission_only' %}bg-green-100 text-green-800
+                                {% elif contract.contract_type == 'hybrid' %}bg-purple-100 text-purple-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ contract.contract_type.replace('_', ' ').title() }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {% if contract.monthly_fee > 0 %}
+                                {{ "{:,.0f}".format(contract.monthly_fee) }} SEK/month
+                            {% endif %}
+                            {% if contract.commission_rate > 0 %}
+                                <br>{{ contract.commission_rate }}% commission
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ contract.start_date.strftime('%Y-%m-%d') }}
+                            {% if contract.end_date %}
+                                <br>to {{ contract.end_date.strftime('%Y-%m-%d') }}
+                            {% else %}
+                                <br><span class="text-green-600">Ongoing</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                {% if contract.status == 'active' %}bg-green-100 text-green-800
+                                {% elif contract.status == 'terminated' %}bg-red-100 text-red-800
+                                {% elif contract.status == 'expired' %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {{ contract.status.title() }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex space-x-2">
+                                <a href="#" class="text-blue-600 hover:text-blue-900">View</a>
+                                {% if contract.status == 'active' %}
+                                <form method="POST" action="{{ url_for('terminate_contract', contract_id=contract.id) }}" class="inline" 
+                                      onsubmit="return confirm('Are you sure you want to terminate this contract?')">
+                                    <button type="submit" class="text-red-600 hover:text-red-900">Terminate</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            <div class="flex flex-col items-center py-8">
+                                <i data-lucide="file-signature" class="w-12 h-12 text-gray-400 mb-4"></i>
+                                <p class="text-lg font-medium text-gray-900 mb-2">No contracts found</p>
+                                <p class="text-gray-600 mb-4">Create your first employment contract to get started.</p>
+                                <a href="{{ url_for('add_contract') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200">
+                                    <i data-lucide="plus" class="w-4 h-4 inline mr-2"></i>Add Contract
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if contracts.pages > 1 %}
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200">
+            <div class="flex-1 flex justify-between sm:hidden">
+                {% if contracts.has_prev %}
+                <a href="{{ url_for('contracts', page=contracts.prev_num) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Previous</a>
+                {% endif %}
+                {% if contracts.has_next %}
+                <a href="{{ url_for('contracts', page=contracts.next_num) }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Next</a>
+                {% endif %}
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        Showing <span class="font-medium">{{ contracts.per_page * (contracts.page - 1) + 1 }}</span>
+                        to <span class="font-medium">{{ contracts.per_page * (contracts.page - 1) + contracts.items|length }}</span>
+                        of <span class="font-medium">{{ contracts.total }}</span> contracts
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        {% if contracts.has_prev %}
+                        <a href="{{ url_for('contracts', page=contracts.prev_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                        </a>
+                        {% endif %}
+                        
+                        {% for page in contracts.iter_pages() %}
+                            {% if page %}
+                                {% if page != contracts.page %}
+                                <a href="{{ url_for('contracts', page=page) }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">{{ page }}</a>
+                                {% else %}
+                                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600">{{ page }}</span>
+                                {% endif %}
+                            {% else %}
+                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">…</span>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if contracts.has_next %}
+                        <a href="{{ url_for('contracts', page=contracts.next_num) }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                        </a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

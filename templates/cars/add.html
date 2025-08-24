@@ -1,0 +1,167 @@
+{% block title %}Add Vehicle - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Add Vehicle</h2>
+    <form action="{{ url_for('add_vehicle') }}" method="post" class="space-y-4">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.make.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.make(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.model.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.model(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.year.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.year(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.license_plate.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.license_plate(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">Add Vehicle</button>
+    </form>
+</div>
+{% endblock %}
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Add Expense</h2>
+    <form action="{{ url_for('add_expense') }}" method="post" class="space-y-4">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.date.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.date(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus;border-blue-500") }}
+        </div>
+        <div>
+            {{ form.category.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.category(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus;border-blue-500") }}
+        </div>
+        <div>
+            {{ form.description.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.description(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus;border-blue-500") }}
+        </div>
+        <div>
+            {{ form.amount.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.amount(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus;border-blue-500") }}
+        </div>
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md">Add Expense</button>
+    </form>
+</div>
+{% endblock %}
+
+<!-- expenses.html -->
+{% extends 'base.html' %}
+{% block title %}Expenses - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Expenses</h2>
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+{% extends 'base.html' %}
+{% block title %}Add Vehicle - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Add Vehicle</h2>
+    <form action="{{ url_for('add_vehicle') }}" method="post" class="space-y-4">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.make.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.make(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.model.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.model(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.year.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.year(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.license_plate.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.license_plate(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">Add Vehicle</button>
+    </form>
+</div>
+{% endblock %}
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for expense in expenses %}
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ expense.date.strftime('%Y-%m-%d') }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ expense.category }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ expense.description }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">{{ "%.2f"|format(expense.amount) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+<!-- vehicles.html -->
+{% extends 'base.html' %}
+{% block title %}Vehicles - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Vehicles</h2>
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Make & Model</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">License Plate</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for car in vehicles %}
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ car.make }} {{ car.model }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ car.year }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ car.license_plate }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <a href="{{ url_for('edit_vehicle', id=car.id) }}" class="text-blue-600 hover:text-blue-900 mr-4">Edit</a>
+                    <a href="{{ url_for('delete_vehicle', id=car.id) }}" class="text-red-600 hover:text-red-900">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+<!-- add_vehicle.html -->
+{% extends 'base.html' %}
+{% block title %}Add Vehicle - TaxiTracker Pro{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Add Vehicle</h2>
+    <form action="{{ url_for('add_vehicle') }}" method="post" class="space-y-4">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.make.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.make(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.model.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.model(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.year.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.year(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <div>
+            {{ form.license_plate.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.license_plate(class_="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500") }}
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">Add Vehicle</button>
+    </form>
+</div>
+{% endblock %}
+
